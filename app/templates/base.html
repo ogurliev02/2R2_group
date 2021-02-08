@@ -8,8 +8,18 @@
     </head>
     
     <body>
-        <div>Home page: <a href="/index">Home</a></div>
+        <div>Home page: <a href="{{ url_for('index') }}">Home</a></div>
+        <div>Home page: <a href="{{ url_for('login') }}">Sign In</a></div>
         <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if message in messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
 
         {% block content %}{% endblock %}
     </body>
