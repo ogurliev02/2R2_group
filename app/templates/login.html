@@ -22,10 +22,5 @@
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
     </form>
-
-    {% if username and password %}
-        <p>{{ username }}</p>
-        <p>{{ password }}</p>
-    {% endif %}
-
+    <p>Не зарегистрирован? <a href="{{ url_for('register') }}">Нажми сюда!</a></p>
 {% endblock %}
