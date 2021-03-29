@@ -9,6 +9,7 @@
     
     <body>
         <div>Home page: <a href="{{ url_for('index') }}">Home</a></div>
+        <div>Explore page: <a href="{{ url_for('explore') }}">Explore</a></div>
         {% if current_user.is_anonymous %}
             <div>Login page: <a href="{{ url_for('login') }}">Login</a></div>
         {% else %}
