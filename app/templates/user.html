@@ -14,10 +14,17 @@
 
     <p>{{ user.followers.count() }} followers</p>
     <p>{{ user.followed.count() }} followed</p>
+    {% if user.about_me %}<p>About me: {{ user.about_me }}</p>>{% endif %}
+    {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>>{% endif %}
 
     {% for post in posts %}
         <p>{{ post.author.username }} says: <b>{{ post.body }}</b></p>
     {% endfor %}
-    {% if user.about_me %}<p>About me: {{ user.about_me }}</p>>{% endif %}
-    {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>>{% endif %}
+
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Newer Posts</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Older Posts</a>
+    {% endif %}
 {% endblock %}
