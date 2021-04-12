@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegisterForm, EditProfileForm, PostForm, ResetPasswordRequestForm
+from app.forms import LoginForm, RegisterForm, EditProfileForm, PostForm, ResetPasswordRequestForm, EmptyForm
 from app.models import User, Post
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -44,7 +44,7 @@ def explore():
     return render_template('index.html', title='Explore', posts=posts.items,
                                 next_url=next_url, prev_url=prev_url)
 
-@app.route('/user/<username>')
+@app.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -53,7 +53,8 @@ def user(username):
                         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('user', username=user.username, page=posts.next_num) if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) if posts.has_prev else None
-    return render_template('user.html', user=user, posts=posts.items, next_url=next_url, prev_url=prev_url)
+    form = EmptyForm()
+    return render_template('user.html', user=user, posts=posts.items, next_url=next_url, prev_url=prev_url, form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -103,34 +104,38 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
-@app.route('/follow/<username>')
+@app.route('/follow/<username>', methods=['POST'])
 @login_required
 def follow(username):
-    user = User.query.filter_by(username=username).first()
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
 
-    if user is None:
-        return 'Такого пользователя нет! На него нельзя подписаться!'
+        if user is None:
+            return 'Такого пользователя нет! На него нельзя подписаться!'
     
-    if user == current_user:
-        return 'К сожалению, Вы не сможете подписаться сами на себя...'
+        if user == current_user:
+            return 'К сожалению, Вы не сможете подписаться сами на себя...'
 
-    current_user.follow(user)
-    db.session.commit()
+        current_user.follow(user)
+        db.session.commit()
     return render_template(url_for('user', username=username))
 
-@app.route('/unfollow/<username>')
+@app.route('/unfollow/<username>', methods=['POST'])
 @login_required
 def unfollow(username):
-    user = User.query.filter_by(username=username).first()
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
 
-    if user is None:
-        return 'Такого пользователя нет! От него нельзя отписаться!'
+        if user is None:
+            return 'Такого пользователя нет! От него нельзя отписаться!'
+    
+        if user == current_user:
+            return 'К сожалению, Вы не сможете отписаться сами на себя...'
 
-    if user == current_user:
-        return 'К сожалению, Вы не сможете отписаться от самого себя...'
-
-    current_user.unfollow(user)
-    db.session.commit()
+        current_user.unfollow(user)
+        db.session.commit()
     return render_template(url_for('user', username=username))
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
