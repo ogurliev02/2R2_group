@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_avatars import Avatars
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,5 +18,6 @@ login.login_message = 'Please, log in now'
 avatars = Avatars(app)
 mail = Mail(app)
 bootstrap = Bootstrap(app)
+moment = Moment(app)
 
 from app import routes, models, forms, errors
