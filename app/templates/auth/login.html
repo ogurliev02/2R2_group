@@ -10,7 +10,7 @@
     </div>
     <br>
     <p>Забыл пароль?
-        <a href="{{ url_for('reset_password_request') }}">Кликин сюда для восстановления!</a>
+        <a href="{{ url_for('auth.reset_password_request') }}">Кликин сюда для восстановления!</a>
     </p>
-    <p>Не зарегистрирован? <a href="{{ url_for('register') }}">Нажми сюда!</a></p>
+    <p>Не зарегистрирован? <a href="{{ url_for('auth.register') }}">Нажми сюда!</a></p>
 {% endblock %}
